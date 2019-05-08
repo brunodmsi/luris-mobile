@@ -1,55 +1,31 @@
-import { StyleSheet, Dimensions } from 'react-native';
-
-const SCREEN_DIM = Dimensions.get('window');
+import { StyleSheet, Dimensions } from "react-native";
+import { colors, metrics } from "~/styles";
 
 const styles = StyleSheet.create({
   marker: {
     height: 2,
-    width: 2,
+    width: 2
   },
-  image: {
-    height: 70,
-    width: 70,
+
+  button: {
+    width: 80,
+    paddingHorizontal: 12,
+    alignItems: "center",
+    marginHorizontal: 10
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0,0,0,0.1)',
+
+  addBtn: {
+    marginBottom: metrics.baseMargin * 2,
+    marginRight: metrics.baseMargin * 2
   },
-  addModalContent: {
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 30,
-    shadowRadius: 10,
-    // width: SCREEN_DIM.width / 2,
-    // height: 200
-  },
-  modalCloseButton: {
-    backgroundColor: 'lightblue',
-    padding: 12,
-    margin: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    flex: 0,
-    borderColor: 'rgba(0,0,0,0.1)',
-  },
-  addButton: {
-    width: '100%',
-    backgroundColor: '#2c3e50',
-    paddingTop: 20,
-    paddingBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 20,
-    color: 'white',
-  },
+
+  addBtnContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0
+    // marginBottom: metrics.baseMargin * 2,
+    // marginRight: metrics.baseMargin * 3
+  }
 });
 
 export default styles;

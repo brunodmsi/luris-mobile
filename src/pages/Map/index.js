@@ -1,20 +1,24 @@
 /* eslint-disable no-useless-return */
-import React, { Component } from 'react';
-import { View, AsyncStorage } from 'react-native';
+import React, { Component } from "react";
+import { View, AsyncStorage, TouchableOpacity, Text } from "react-native";
 
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker } from "react-native-maps";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
-import Header from '~/components/Header';
+import Header from "~/components/Header";
 
-import api from '../../services/api';
-import custom from './mapCustomStyle';
+import styles from "./styles";
+import custom from "./mapCustomStyle";
+import { colors } from "~/styles";
 
-import ramp from '../../images/ramp.png';
-import tatile from '../../images/tatile.jpeg';
+import api from "~/services/api";
+
+import ramp from "~/images/rampTest.png";
+import tatile from "~/images/tatileTest.png";
 
 export default class Map extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
@@ -22,7 +26,7 @@ export default class Map extends Component {
     isTypeSelected: false,
     isRegionSet: false,
     isMarkersLoaded: false,
-    markers: [],
+    markers: []
   };
 
   async componentDidMount() {
@@ -32,12 +36,12 @@ export default class Map extends Component {
           latitude: latitude,
           longitude: longitude,
           latitudeDelta: 0.0143,
-          longitudeDelta: 0.0134,
+          longitudeDelta: 0.0134
         };
 
         this.setState({ region, isRegionSet: true });
       },
-      error => alert(JSON.stringify(error)),
+      error => alert(JSON.stringify(error))
       // {
       //   enableHighAccuracy: true,
       //   timeout: 20000,
@@ -46,13 +50,13 @@ export default class Map extends Component {
       // },
     );
 
-    const { token } = JSON.parse(await AsyncStorage.getItem('@Luris:user'));
+    const { token } = JSON.parse(await AsyncStorage.getItem("@Luris:user"));
 
     await api
-      .get('/access', {
+      .get("/access", {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       })
       .then(res => {
         this.setState({ markers: res.data, isMarkersLoaded: true });
@@ -82,6 +86,7 @@ export default class Map extends Component {
           initialRegion={region}
           showsUserLocation
           loadingEnabled
+          showsMyLocationButton={true}
           customMapStyle={custom}
           onPress={event => this.createMarker(event.nativeEvent.coordinate)}
         >
@@ -90,14 +95,19 @@ export default class Map extends Component {
               <Marker
                 coordinate={{
                   latitude: Number(marker.latitude),
-                  longitude: Number(marker.longitude),
+                  longitude: Number(marker.longitude)
                 }}
-                icon={marker.type === 'ramp' ? ramp : tatile}
-                style={{ height: 2, width: 2 }}
+                icon={marker.type === "ramp" ? ramp : tatile}
+                style={styles.marker}
                 key={marker._id}
               />
             ))}
         </MapView>
+        <View style={styles.addBtnContainer}>
+          <TouchableOpacity style={styles.addBtn}>
+            <Icon name="add-location" size={64} color={colors.primary} solid />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
