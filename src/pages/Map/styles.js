@@ -3,8 +3,8 @@ import { colors, metrics } from "~/styles";
 
 const styles = StyleSheet.create({
   marker: {
-    height: 2,
-    width: 2
+    height: 4,
+    width: 4
   },
 
   button: {
@@ -15,16 +15,41 @@ const styles = StyleSheet.create({
   },
 
   addBtn: {
-    marginBottom: metrics.baseMargin * 2,
-    marginRight: metrics.baseMargin * 2
+    flex: 1
   },
 
   addBtnContainer: {
     position: "absolute",
     bottom: 0,
     right: 0
-    // marginBottom: metrics.baseMargin * 2,
-    // marginRight: metrics.baseMargin * 3
+  },
+
+  cancelBtnContainer: {
+    position: "absolute",
+    flexDirection: "row",
+    bottom: 0,
+    right: 0
+  },
+
+  modalBtn: {},
+
+  modalWrapper: {
+    height: 150,
+    width: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.white,
+    borderRadius: 8
+  },
+
+  modalContent: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+
+  modalText: {
+    fontSize: 24
   }
 });
 
