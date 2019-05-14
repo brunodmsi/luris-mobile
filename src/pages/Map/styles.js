@@ -30,27 +30,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0
   },
-
-  modalBtn: {},
-
-  modalWrapper: {
-    height: 150,
-    width: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.white,
-    borderRadius: 8
-  },
-
-  modalContent: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-
-  modalText: {
-    fontSize: 24
-  }
 });
 
 export default styles;

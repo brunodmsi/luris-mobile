@@ -39,19 +39,21 @@ class Header extends Component {
   };
 
   render() {
-    const { title } = this.props;
+    const { title, handleFilterModal } = this.props;
     const { isLoggingOut } = this.state;
 
     return (
       <View style={styles.container}>
-        <View style={styles.left} />
-        <Text style={styles.title}>{title}</Text>
         <TouchableOpacity style={styles.button} onPress={this.handleSignOut}>
           {isLoggingOut ? (
             <MaterialIndicator color="#333" size={16} />
           ) : (
-            <Icon name="exchange" size={16} style={styles.icon} />
+            <Icon name="sign-out" size={16} style={styles.icon} />
           )}
+        </TouchableOpacity>
+        <Text style={styles.title}>{title}</Text>
+        <TouchableOpacity style={styles.button} onPress={handleFilterModal} >
+          <Icon name="filter" size={16} style={styles.icon} />
         </TouchableOpacity>
       </View>
     );
