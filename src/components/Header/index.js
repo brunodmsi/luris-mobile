@@ -15,6 +15,7 @@ import styles from './styles';
 class Header extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
+    handleFilterModal: PropTypes.func.isRequired,
     navigation: PropTypes.shape({
       navigate: PropTypes.func,
     }).isRequired,
@@ -51,8 +52,10 @@ class Header extends Component {
             <Icon name="sign-out" size={16} style={styles.icon} />
           )}
         </TouchableOpacity>
+
         <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity style={styles.button} onPress={handleFilterModal} >
+
+        <TouchableOpacity style={styles.button} onPress={() => handleFilterModal()}>
           <Icon name="filter" size={16} style={styles.icon} />
         </TouchableOpacity>
       </View>

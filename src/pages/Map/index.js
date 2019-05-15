@@ -3,7 +3,7 @@
 /* eslint-disable no-useless-return */
 import React, { Component } from 'react';
 import {
-  View, AsyncStorage, TouchableOpacity, Text, Image,
+  View, AsyncStorage, TouchableOpacity, Text,
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '~/components/Header';
 import TypeModal from '~/components/TypeModal';
+import FilterModal from '~/components/FilterModal';
 
 import styles from './styles';
 import custom from './mapCustomStyle';
@@ -82,6 +83,23 @@ export default class Map extends Component {
     const { filterModal } = this.state;
 
     this.setState({ filterModal: !filterModal });
+  };
+
+  setFilteredMarkers = async (type, str) => {
+    const { token } = JSON.parse(await AsyncStorage.getItem('@Luris:user'));
+    this.setState({ isMarkersLoaded: false, filterModal: false, markers: [] });
+    if (type === 'all') type = '';
+
+    await api
+      .get(`/access?type=${type}&street=${str}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        this.setState({ markers: res.data, isMarkersLoaded: true });
+      })
+      .catch(err => alert(JSON.stringify(err.response)));
   };
 
   _handleTypeModal = () => {
@@ -157,7 +175,7 @@ export default class Map extends Component {
 
   render() {
     const {
-      region, markers, isMarkersLoaded, renderAddBtn, typeModal,
+      region, markers, isMarkersLoaded, renderAddBtn, typeModal, filterModal,
     } = this.state;
 
     return (
@@ -198,6 +216,14 @@ export default class Map extends Component {
             typeModal={typeModal}
             handleTypeModal={this._handleTypeModal}
             handleTypeSelect={this._handleTypeSelect}
+          />
+        ) : null}
+
+        {filterModal ? (
+          <FilterModal
+            filterModal={filterModal}
+            handleFilterModal={this._handleFilterModal}
+            setNewMarkers={this.setFilteredMarkers}
           />
         ) : null}
       </View>
