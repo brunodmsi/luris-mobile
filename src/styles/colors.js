@@ -7,10 +7,12 @@ export default {
   darker: '#333',
   black: '#000',
 
-  primary: '#7A91CA',
-  secondary: '#444A5A',
+  primary: '#4D3199',
+  secondary: '#303082',
   success: '#9DCA83',
   danger: '#E37A7A',
+
+  point: '#E667A3',
 
   transparent: 'transparent',
   darkTransparent: 'rgba(0, 0, 0, 0.6)',

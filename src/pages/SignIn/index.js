@@ -8,9 +8,12 @@ import {
   StatusBar,
   AsyncStorage,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 
 import api from '~/services/api';
+
+import logo from '~/images/LURIS.png';
 
 import styles from './styles';
 
@@ -81,11 +84,11 @@ export default class SignIn extends Component {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
 
-        <Text style={styles.title}>Luris</Text>
+        {/* <Text style={styles.title}>Luris</Text>
         <Text style={styles.text}>Entre agora! Mas antes...</Text>
         <Text style={styles.text}>precisamos que você</Text>
-        <Text style={styles.text}>informe o seu e-mail e senha.</Text>
-
+        <Text style={styles.text}>informe o seu e-mail e senha.</Text> */}
+        <Image source={logo} />
         {error.length !== 0 && <Text style={styles.error}>{error}</Text>}
 
         <View style={styles.form}>

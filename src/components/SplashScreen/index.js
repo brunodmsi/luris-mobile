@@ -1,12 +1,20 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { Component } from 'react';
+// import { View, Text } from 'react-native';
+import LottieView from 'lottie-react-native';
+
+import animation from '~/animations/splash.json';
 
 import styles from './styles';
 
-const SplashScreen = () => (
-  <View style={styles.container}>
-    <Text style={styles.text}>LURIS</Text>
-  </View>
-);
+export default class SplashScreen extends Component {
+  jtg = () => {};
 
-export default SplashScreen;
+  render() {
+    return (
+      // <View style={styles.container}>
+      //   <Text style={styles.text}>LURIS</Text>
+      // </View>
+      <LottieView source={animation} autoPlay loop style={styles.container} />
+    );
+  }
+}

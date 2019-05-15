@@ -7,7 +7,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     padding: metrics.basePadding * 2,
     justifyContent: 'center',
-    alignItems: 'stretch',
+    alignItems: 'center',
+  },
+
+  image: {
+    width: metrics.screenWidth * 0.75,
+    height: metrics.screenHeight * 0.35,
   },
 
   title: {
