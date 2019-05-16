@@ -84,9 +84,9 @@ export default class Map extends Component {
     this.setState({ filterModal: !filterModal });
   };
 
-  setFilteredMarkers = async (type, str) => {
+  _setFilteredMarkers = async (type, str) => {
     const { token } = JSON.parse(await AsyncStorage.getItem('@Luris:user'));
-    this.setState({ isMarkersLoaded: false, filterModal: false, markers: [] });
+    this.setState({ isMarkersLoaded: false, filterModal: false });
 
     await api
       .get(`/access?type=${type}&street=${str}`, {
@@ -97,7 +97,7 @@ export default class Map extends Component {
       .then((res) => {
         this.setState({ markers: res.data, isMarkersLoaded: true });
       })
-      .catch(err => alert(JSON.stringify(err.response)));
+      .catch(err => this.dropdown.alertWithType('error', 'Erro', JSON.stringify(err.response)));
   };
 
   _addMarkerModal = () => {
@@ -216,7 +216,7 @@ export default class Map extends Component {
           <FilterModal
             filterModal={filterModal}
             handleFilterModal={this._handleFilterModal}
-            setNewMarkers={this.setFilteredMarkers}
+            setFilteredMarkers={this._setFilteredMarkers}
           />
         ) : null}
         <DropdownAlert ref={ref => (this.dropdown = ref)} />

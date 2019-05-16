@@ -12,8 +12,8 @@ import styles from './styles';
 export default class FilterModal extends Component {
   static propTypes = {
     filterModal: PropTypes.bool.isRequired,
-    handleFilterModal: PropTypes.func,
-    setNewMarkers: PropTypes.func,
+    setFilteredMarkers: PropTypes.func,
+    setFilteredMarkers: PropTypes.func,
   };
 
   state = {
@@ -44,7 +44,7 @@ export default class FilterModal extends Component {
   };
 
   render() {
-    const { handleFilterModal, filterModal, setNewMarkers } = this.props;
+    const { handleFilterModal, filterModal, setFilteredMarkers } = this.props;
     const { data, dropSelected, streetFilter } = this.state;
 
     return (
@@ -83,7 +83,8 @@ export default class FilterModal extends Component {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setNewMarkers(dropSelected, streetFilter)}
+          onPress={() => setFilteredMarkers(dropSelected, streetFilter)}
+          resizeMode="contain"
         >
           <Text style={styles.buttonText}>Filtrar</Text>
         </TouchableOpacity>
