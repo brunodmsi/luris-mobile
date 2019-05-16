@@ -2,29 +2,34 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { colors, metrics } from '~/styles';
 
 const styles = StyleSheet.create({
-  modalWrapper: {
-    backgroundColor: colors.white,
+  modal: {
     flexDirection: 'column',
+    backgroundColor: colors.white,
+    height: 250,
+  },
+
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    marginBottom: metrics.baseMargin,
   },
 
-  modalContent: {
-    width: 300,
-    height: 300,
+  inputs: {
+    width: metrics.screenWidth * 0.8,
   },
 
-  modalText: {
-    fontSize: 30,
-    color: colors.white,
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: metrics.baseMargin,
   },
 
   button: {
     backgroundColor: colors.primary,
-    borderRadius: metrics.baseRadius,
-    height: 44,
+    // borderRadius: metrics.baseRadius,
+    height: 60,
     marginTop: metrics.baseMargin,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -32,7 +37,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
   },
 });
 

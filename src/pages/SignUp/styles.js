@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     padding: metrics.basePadding * 2,
     justifyContent: 'center',
-    alignItems: 'stretch',
+    alignItems: 'center',
   },
 
   title: {
@@ -41,10 +41,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: colors.white,
     borderRadius: metrics.baseRadius,
-    height: 44,
-    paddingHorizontal: metrics.basePadding,
     marginTop: metrics.baseMargin,
   },
 
@@ -66,6 +63,7 @@ const styles = StyleSheet.create({
   signInButton: {
     padding: metrics.basePadding,
     marginTop: metrics.baseMargin,
+    width: metrics.screenWidth * 0.7,
   },
 
   signInText: {

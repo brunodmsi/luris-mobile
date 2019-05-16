@@ -3,15 +3,26 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
+  Image,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import api from '~/services/api';
 
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
+import DropdownAlert from 'react-native-dropdownalert';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Fumi } from 'react-native-textinput-effects';
+
+import logo from '~/images/LURIS.png';
+
 import styles from './styles';
+import { colors } from '~/styles';
 
 export default class SignIn extends Component {
   static propTypes = {
@@ -23,9 +34,8 @@ export default class SignIn extends Component {
   state = {
     email: '',
     password: '',
+    name: '',
     loading: false,
-    error: '',
-    success: '',
   };
 
   goToSignIn = () => {
@@ -33,91 +43,105 @@ export default class SignIn extends Component {
     navigation.navigate('SignIn');
   };
 
-  signUpUser = async (email, password) => {
-    try {
-      const user = await api.post('users', {
-        email,
-        password,
-      });
-
-      return { failed: false, user };
-    } catch (err) {
-      return { failed: true, error: err.response };
-    }
-  };
-
   signUp = async () => {
-    const { email, password } = this.state;
+    const { name, email, password } = this.state;
 
     this.setState({ loading: true });
 
-    if (email.length === 0 || password.length === 0) {
-      this.setState({ error: 'Preencha os campos para continuar!', loading: false });
+    if (email.length === 0 || password.length === 0 || name.length === 0) {
+      this.dropdown.alertWithType('error', 'Erro', 'Preencha os campos para continuar!');
+      this.setState({ loading: false });
     } else {
       try {
-        const user = await this.signUpUser(email, password);
-        if (user.failed) throw user.error.data.error;
-        this.setState({ success: 'Conta criada com sucesso! Indo para o Login...', error: '' });
+        await api.post('users', {
+          name,
+          email,
+          password,
+        });
+
+        this.dropdown.alertWithType(
+          'success',
+          'Sucesso',
+          'Sua conta foi criada! Redirecionando...',
+        );
 
         setTimeout(this.goToSignIn, 3000);
       } catch (err) {
-        this.setState({ loading: false, error: err });
+        this.setState({ loading: false });
+        this.dropdown.alertWithType('error', 'Erro', err.response.data.error);
       }
     }
   };
 
   render() {
-    const {
-      email, password, loading, error, success,
-    } = this.state;
+    const { loading } = this.state;
 
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.container}>
+          <StatusBar hidden />
 
-        <Text style={styles.title}>Luris</Text>
-        <Text style={styles.text}>Cadastre-se agora</Text>
-        <Text style={styles.text}>e junte-se a Luris!</Text>
+          <Image source={logo} />
+          <Text style={styles.text}>Cadastre-se agora!</Text>
+          <Text style={styles.text}>Nos informe seu</Text>
+          <Text style={styles.text}>nome, e-mail e senha.</Text>
 
-        {error.length !== 0 && <Text style={styles.error}>{error}</Text>}
-        {success.length !== 0 && <Text style={styles.success}>{success}</Text>}
+          <View style={styles.form}>
+            <Fumi
+              label="Nome"
+              iconClass={Icon}
+              iconName="user"
+              iconColor={colors.secondary}
+              iconSize={20}
+              iconWidth={40}
+              inputPadding={16}
+              onChangeText={text => this.setState({ name: text })}
+              style={styles.input}
+            />
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            placeholder="Digite seu e-mail"
-            underlineColorAndroid="transparent"
-            value={email}
-            onChangeText={text => this.setState({ email: text })}
-          />
+            <Fumi
+              label="E-mail"
+              iconClass={Icon}
+              iconName="envelope"
+              iconColor={colors.secondary}
+              iconSize={20}
+              iconWidth={40}
+              inputPadding={16}
+              onChangeText={text => this.setState({ email: text })}
+              style={styles.input}
+              keyboardType="email-address"
+            />
 
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Digite sua senha "
-            underlineColorAndroid="transparent"
-            value={password}
-            secureTextEntry
-            onChangeText={text => this.setState({ password: text })}
-          />
+            <Fumi
+              label="Senha"
+              iconClass={Icon}
+              iconName="lock"
+              iconColor={colors.secondary}
+              iconSize={20}
+              inputPadding={16}
+              iconWidth={40}
+              style={styles.input}
+              onChangeText={text => this.setState({ password: text })}
+              secureTextEntry
+            />
 
-          <TouchableOpacity style={styles.button} onPress={this.signUp}>
-            {loading ? (
-              <ActivityIndicator size="small" color="#FFF" />
-            ) : (
-              <Text style={styles.buttonText}>Cadastrar</Text>
-            )}
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.signUp}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFF" />
+              ) : (
+                <Text style={styles.buttonText}>Entrar</Text>
+              )}
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.signInButton} onPress={this.goToSignIn}>
-            <Text style={styles.signInText}>Voltar para o Login</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.signInButton} onPress={this.goToSignIn}>
+              <Text style={styles.signInText}>Ja tem uma conta?</Text>
+              <Text style={styles.signInText}>Entre agora!</Text>
+            </TouchableOpacity>
+          </View>
+          <KeyboardSpacer />
+          <DropdownAlert ref={ref => (this.dropdown = ref)} />
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

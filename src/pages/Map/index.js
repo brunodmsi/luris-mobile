@@ -3,24 +3,23 @@
 /* eslint-disable no-useless-return */
 import React, { Component } from 'react';
 import {
-  View, AsyncStorage, TouchableOpacity, Text,
+  View, AsyncStorage, TouchableOpacity, Text, StatusBar,
 } from 'react-native';
 
-import MapView, { Marker } from 'react-native-maps';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import DropdownAlert from 'react-native-dropdownalert';
+import MapView from 'react-native-maps';
+import { Icon } from 'react-native-elements';
 
 import Header from '~/components/Header';
-import TypeModal from '~/components/TypeModal';
+import AddMarkerModal from '~/components/AddMarkerModal';
 import FilterModal from '~/components/FilterModal';
 
+import CustomMarker from '~/components/CustomMarker';
+
 import styles from './styles';
-import custom from './mapCustomStyle';
 import { colors } from '~/styles';
 
 import api from '~/services/api';
-
-import ramp from '~/images/rampTest.png';
-import tatile from '~/images/tatileTest.png';
 
 export default class Map extends Component {
   static navigationOptions = {
@@ -34,7 +33,7 @@ export default class Map extends Component {
     isMarkersLoaded: false,
     markers: [],
     renderAddBtn: true,
-    typeModal: false,
+    addMarkerModal: false,
     typeSelected: '',
     filterModal: false,
   };
@@ -45,8 +44,8 @@ export default class Map extends Component {
         const region = {
           latitude,
           longitude,
-          latitudeDelta: 0.0143,
-          longitudeDelta: 0.0134,
+          latitudeDelta: 0.007,
+          longitudeDelta: 0.0071,
         };
 
         this.setState({ region, isRegionSet: true });
@@ -88,7 +87,6 @@ export default class Map extends Component {
   setFilteredMarkers = async (type, str) => {
     const { token } = JSON.parse(await AsyncStorage.getItem('@Luris:user'));
     this.setState({ isMarkersLoaded: false, filterModal: false, markers: [] });
-    if (type === 'all') type = '';
 
     await api
       .get(`/access?type=${type}&street=${str}`, {
@@ -102,40 +100,30 @@ export default class Map extends Component {
       .catch(err => alert(JSON.stringify(err.response)));
   };
 
-  _handleTypeModal = () => {
-    const { typeModal, renderAddBtn } = this.state;
+  _addMarkerModal = () => {
+    const { addMarkerModal, renderAddBtn } = this.state;
 
-    if (typeModal && !renderAddBtn) {
+    if (addMarkerModal && !renderAddBtn) {
       this.setState({
-        typeModal: false,
+        addMarkerModal: false,
         renderAddBtn: true,
       });
-    } else if (!typeModal && renderAddBtn) {
-      this.setState({ typeModal: true, renderAddBtn: false });
-    } else if (!typeModal && !renderAddBtn) {
+    } else if (!addMarkerModal && renderAddBtn) {
+      this.setState({ addMarkerModal: true, renderAddBtn: false });
+    } else if (!addMarkerModal && !renderAddBtn) {
       this.setState({ renderAddBtn: true });
     }
   };
 
-  _handleTypeSelect = (type) => {
+  _handleMarkerSelect = (type) => {
     this.setState({
       typeSelected: type,
-      typeModal: false,
+      addMarkerModal: false,
       isTypeSelected: true,
     });
   };
 
-  _renderMarker = (latitude, longitude, type, _id) => (
-    <Marker
-      coordinate={{
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-      }}
-      icon={type === 'ramp' ? ramp : tatile}
-      style={styles.marker}
-      key={_id}
-    />
-  );
+  renderMarker = marker => <CustomMarker marker={marker} />;
 
   async createMarker(coords) {
     const { isTypeSelected, typeSelected, markers } = this.state;
@@ -158,7 +146,7 @@ export default class Map extends Component {
         },
       )
       .catch(() => {
-        alert('Ocorreu um erro ao adicionar o ponto');
+        this.dropdown.alertWithType('error', 'Erro', 'Ocorreu um erro ao adicionar o ponto!');
       });
 
     this.setState({
@@ -168,54 +156,59 @@ export default class Map extends Component {
     });
 
     const { data } = res;
-    this._renderMarker(data.latitude, data.longitude, data.type, data._id);
+    this.renderMarker(data);
 
-    alert('Ponto adicionado com sucesso!');
+    this.dropdown.alertWithType('success', 'Sucesso', 'Ponto adicionado com sucesso!');
   }
 
   render() {
     const {
-      region, markers, isMarkersLoaded, renderAddBtn, typeModal, filterModal,
+      region,
+      markers,
+      isMarkersLoaded,
+      renderAddBtn,
+      addMarkerModal,
+      filterModal,
     } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar hidden />
         <Header title="LURIS" handleFilterModal={this._handleFilterModal} />
         <MapView
+          provider="google"
           style={{ flex: 1 }}
           initialRegion={region}
           showsUserLocation
           loadingEnabled
           showsMyLocationButton
-          customMapStyle={custom}
+          showsTraffic={false}
+          rotateEnabled={false}
           onPress={event => this.createMarker(event.nativeEvent.coordinate)}
         >
-          {isMarkersLoaded
-            && markers.map(marker => this._renderMarker(marker.latitude, marker.longitude, marker.type, marker._id))}
+          {isMarkersLoaded && markers.map(marker => this.renderMarker(marker))}
         </MapView>
-
+        {/* <TouchableOpacity style={styles.addBtn} onPress={this._addMarkerModal}> */}
+        {/* <Icon name="add-location" size={64} color={colors.primary} solid /> */}
         {renderAddBtn ? (
-          <View style={styles.addBtnContainer}>
-            <TouchableOpacity style={styles.addBtn} onPress={this._handleTypeModal}>
-              <Icon name="add-location" size={64} color={colors.primary} solid />
+          <View style={styles.btnContainer}>
+            <TouchableOpacity onPress={this._addMarkerModal}>
+              <Icon name="add-location" size={35} reverse color={colors.secondary} />
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.cancelBtnContainer}>
-            <View style={styles.addText}>
-              <Text>Selecione um ponto</Text>
-            </View>
-            <TouchableOpacity style={styles.addBtn} onPress={this._handleTypeModal}>
-              <Icon name="cancel" size={64} color={colors.primary} solid />
+          <View style={styles.btnContainer}>
+            <TouchableOpacity onPress={this._addMarkerModal}>
+              <Icon name="cancel" size={35} reverse color={colors.secondary} />
             </TouchableOpacity>
           </View>
         )}
 
-        {typeModal ? (
-          <TypeModal
-            typeModal={typeModal}
-            handleTypeModal={this._handleTypeModal}
-            handleTypeSelect={this._handleTypeSelect}
+        {addMarkerModal ? (
+          <AddMarkerModal
+            addMarkerModal={addMarkerModal}
+            handleAddMarkerModal={this._addMarkerModal}
+            handleMarkerSelect={this._handleMarkerSelect}
           />
         ) : null}
 
@@ -226,6 +219,7 @@ export default class Map extends Component {
             setNewMarkers={this.setFilteredMarkers}
           />
         ) : null}
+        <DropdownAlert ref={ref => (this.dropdown = ref)} />
       </View>
     );
   }

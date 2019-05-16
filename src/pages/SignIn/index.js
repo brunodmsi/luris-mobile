@@ -3,19 +3,27 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StatusBar,
   AsyncStorage,
   ActivityIndicator,
   Image,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
+
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
+import DropdownAlert from 'react-native-dropdownalert';
+import { Fumi } from 'react-native-textinput-effects';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import api from '~/services/api';
 
 import logo from '~/images/LURIS.png';
 
 import styles from './styles';
+import { colors } from '~/styles';
 
 export default class SignIn extends Component {
   static propTypes = {
@@ -28,25 +36,11 @@ export default class SignIn extends Component {
     email: '',
     password: '',
     loading: false,
-    error: '',
   };
 
   goToSignUp = () => {
     const { navigation } = this.props;
     navigation.navigate('SignUp');
-  };
-
-  logInUser = async (email, password) => {
-    try {
-      const user = await api.post('sessions', {
-        email,
-        password,
-      });
-
-      return { failed: false, user };
-    } catch (err) {
-      return { failed: true, error: err.response };
-    }
   };
 
   saveUser = async (data) => {
@@ -61,72 +55,82 @@ export default class SignIn extends Component {
     this.setState({ loading: true });
 
     if (email.length === 0 || password.length === 0) {
-      this.setState({ error: 'Preencha os campos para continuar!', loading: false });
+      this.setState({ loading: false });
+      this.dropdown.alertWithType('error', 'Erro', 'Preencha os campos para continuar!');
     } else {
       try {
-        const response = await this.logInUser(email, password);
-        if (response.failed) throw response.error.data.error;
-        await this.saveUser(response.user.data);
+        const user = await api.post('sessions', {
+          email,
+          password,
+        });
+
+        await this.saveUser(user.data);
 
         navigation.navigate('Map');
       } catch (err) {
-        this.setState({ loading: false, error: err });
+        this.setState({ loading: false });
+        this.dropdown.alertWithType('error', 'Erro', err.response.data.error);
       }
     }
   };
 
   render() {
-    const {
-      email, password, loading, error,
-    } = this.state;
+    const { loading } = this.state;
 
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.container}>
+          <StatusBar hidden />
 
-        {/* <Text style={styles.title}>Luris</Text>
-        <Text style={styles.text}>Entre agora! Mas antes...</Text>
-        <Text style={styles.text}>precisamos que você</Text>
-        <Text style={styles.text}>informe o seu e-mail e senha.</Text> */}
-        <Image source={logo} />
-        {error.length !== 0 && <Text style={styles.error}>{error}</Text>}
+          <Image source={logo} />
+          <Text style={styles.text}>Entre agora! Mas antes...</Text>
+          <Text style={styles.text}>precisamos que você</Text>
+          <Text style={styles.text}>informe o seu e-mail e senha.</Text>
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Digite seu e-mail"
-            underlineColorAndroid="transparent"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={text => this.setState({ email: text })}
-          />
+          <View style={styles.form}>
+            <Fumi
+              label="E-mail"
+              iconClass={Icon}
+              iconName="envelope"
+              iconColor={colors.secondary}
+              iconSize={20}
+              iconWidth={40}
+              inputPadding={16}
+              onChangeText={text => this.setState({ email: text })}
+              style={styles.input}
+              keyboardType="email-address"
+            />
 
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Digite sua senha"
-            underlineColorAndroid="transparent"
-            value={password}
-            secureTextEntry
-            onChangeText={text => this.setState({ password: text })}
-          />
+            <Fumi
+              label="Senha"
+              iconClass={Icon}
+              iconName="lock"
+              iconColor={colors.secondary}
+              iconSize={20}
+              inputPadding={16}
+              iconWidth={40}
+              style={styles.input}
+              onChangeText={text => this.setState({ password: text })}
+              secureTextEntry
+            />
 
-          <TouchableOpacity style={styles.button} onPress={this.signIn}>
-            {loading ? (
-              <ActivityIndicator size="small" color="#FFF" />
-            ) : (
-              <Text style={styles.buttonText}>Entrar</Text>
-            )}
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.signIn}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFF" />
+              ) : (
+                <Text style={styles.buttonText}>Entrar</Text>
+              )}
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.signUpButton} onPress={this.goToSignUp}>
-            <Text style={styles.signUpText}>Nao tem uma conta? Cadastre-se agora!</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.signUpButton} onPress={this.goToSignUp}>
+              <Text style={styles.signUpText}>Nao tem uma conta?</Text>
+              <Text style={styles.signUpText}>Cadastre-se agora!</Text>
+            </TouchableOpacity>
+          </View>
+          <KeyboardSpacer />
+          <DropdownAlert ref={ref => (this.dropdown = ref)} />
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

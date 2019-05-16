@@ -47,7 +47,7 @@ class Header extends Component {
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={this.handleSignOut}>
           {isLoggingOut ? (
-            <MaterialIndicator color="#333" size={16} />
+            <MaterialIndicator color="#EEE" size={16} />
           ) : (
             <Icon name="sign-out" size={16} style={styles.icon} />
           )}

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { AsyncStorage, ActivityIndicator } from 'react-native';
 import '~/config/ReactotronConfig';
+import CodePush from 'react-native-code-push';
 
 import SplashScreen from '~/components/SplashScreen';
 import createNavigator from './routes';
 import api from '~/services/api';
 
-export default class App extends Component {
+class App extends Component {
   state = {
     userChecked: false,
     userLogged: false,
@@ -46,3 +47,7 @@ export default class App extends Component {
     return <Routes />;
   }
 }
+
+export default CodePush({
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+})(App);

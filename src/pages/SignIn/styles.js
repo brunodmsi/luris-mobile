@@ -10,11 +10,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  image: {
-    width: metrics.screenWidth * 0.75,
-    height: metrics.screenHeight * 0.35,
-  },
-
   title: {
     textAlign: 'center',
     color: colors.white,
@@ -40,10 +35,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: colors.white,
     borderRadius: metrics.baseRadius,
-    height: 44,
-    paddingHorizontal: metrics.basePadding,
     marginTop: metrics.baseMargin,
   },
 
@@ -65,6 +57,7 @@ const styles = StyleSheet.create({
   signUpButton: {
     padding: metrics.basePadding,
     marginTop: metrics.baseMargin,
+    width: metrics.screenWidth * 0.7,
   },
 
   signUpText: {
