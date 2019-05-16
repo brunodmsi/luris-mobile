@@ -11,10 +11,12 @@
   "env": {
     "production": {
       "plugins": [
-        "babel-plugin-root-import",
-        {
-          "rootPathSuffix": "src"
-        }
+        [
+          "babel-plugin-root-import",
+          {
+            "rootPathSuffix": "src"
+          }
+        ]
       ]
     }
   }
