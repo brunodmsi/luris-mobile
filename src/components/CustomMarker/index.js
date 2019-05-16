@@ -2,14 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 
 import { Marker, Callout } from 'react-native-maps';
 
 import styles from './styles';
 
-import markerRamp from '~/images/marker-ramp.png';
-import markerTatile from '~/images/marker-tatile.png';
+import rampSmall from '~/images/marker-ramp-small.png';
+import tatileSmall from '~/images/marker-tatile-small.png';
 
 const CustomMarker = ({ marker }) => (
   <Marker
@@ -17,8 +17,7 @@ const CustomMarker = ({ marker }) => (
       latitude: Number(marker.latitude),
       longitude: Number(marker.longitude),
     }}
-    image={marker.type === 'ramp' ? markerRamp : markerTatile}
-    // style={styles.marker}
+    image={marker.type === 'ramp' ? rampSmall : tatileSmall}
     key={marker._id}
   >
     <Callout tooltip>
