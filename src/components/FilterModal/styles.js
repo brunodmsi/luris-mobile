@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   modal: {
     flexDirection: 'column',
     backgroundColor: colors.white,
-    height: 250,
+    height: 300,
   },
 
   container: {

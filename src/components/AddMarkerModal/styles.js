@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 20,
-    height: 30,
+    width: 40,
+    height: 55,
   },
 
   button: {

@@ -43,8 +43,8 @@ export default class AddMarkerModal extends Component {
           resizeMode="contain"
         >
           <View style={styles.button}>
-            <Text style={styles.text}>RAMPA</Text>
-            <Image source={markerRamp} />
+            <Image source={markerRamp} style={styles.image} />
+            <Text style={styles.text}>RAMPA</Text>            
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -53,8 +53,8 @@ export default class AddMarkerModal extends Component {
           resizeMode="contain"
         >
           <View style={styles.button}>
-            <Text style={styles.text}>PISO</Text>
-            <Image source={markerTatile} />
+            <Image source={markerTatile} style={styles.image} />
+            <Text style={styles.text}>PISO</Text>            
           </View>
         </TouchableOpacity>
       </Modal>
