@@ -10,6 +10,7 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -20,7 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import api from '~/services/api';
 
-import logo from '~/images/LURIS.png';
+import logo from '~/images/LURISFULL.png';
 
 import styles from './styles';
 import { colors } from '~/styles';
@@ -36,20 +37,30 @@ export default class SignIn extends Component {
     email: '',
     password: '',
     loading: false,
+    fadeAnim: new Animated.Value(0),
   };
+
+  componentDidMount() {
+    const { fadeAnim } = this.state;
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+    }).start();
+  }
 
   goToSignUp = () => {
     const { navigation } = this.props;
     navigation.navigate('SignUp');
   };
 
-  saveUser = async (data) => {
+  saveUser = async data => {
     const userData = JSON.stringify(data);
     await AsyncStorage.setItem('@Luris:user', userData);
   };
 
   signIn = async () => {
-    const { email, password } = this.state;
+    const { email, password, fadeAnim } = this.state;
     const { navigation } = this.props;
 
     this.setState({ loading: true });
@@ -66,6 +77,11 @@ export default class SignIn extends Component {
 
         await this.saveUser(user.data);
 
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 100,
+        }).start();
+
         navigation.navigate('Map');
       } catch (err) {
         this.setState({ loading: false });
@@ -75,14 +91,14 @@ export default class SignIn extends Component {
   };
 
   render() {
-    const { loading } = this.state;
+    const { loading, fadeAnim } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           <StatusBar hidden />
 
-          <Image source={logo} />
+          <Image source={logo} style={styles.logo} />
           <Text style={styles.text}>Entre agora! Mas antes...</Text>
           <Text style={styles.text}>precisamos que você</Text>
           <Text style={styles.text}>informe o seu e-mail e senha.</Text>
@@ -129,7 +145,7 @@ export default class SignIn extends Component {
           </View>
           <KeyboardSpacer />
           <DropdownAlert ref={ref => (this.dropdown = ref)} />
-        </View>
+        </Animated.View>
       </TouchableWithoutFeedback>
     );
   }

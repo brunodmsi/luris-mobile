@@ -1,15 +1,17 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-underscore-dangle */
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Text, Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
-import { Marker, Callout } from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 
 import styles from './styles';
 
-import rampSmall from '~/images/marker-ramp-small.png';
-import tatileSmall from '~/images/marker-tatile-small.png';
+import rampMarker from '~/images/marker-ramp.png';
+import tatileMarker from '~/images/marker-tatile.png';
 
 const CustomMarker = ({ marker }) => (
   <Marker
@@ -17,19 +19,16 @@ const CustomMarker = ({ marker }) => (
       latitude: Number(marker.latitude),
       longitude: Number(marker.longitude),
     }}
-    image={marker.type === 'ramp' ? rampSmall : tatileSmall}
-    key={marker._id}
+    key={`${marker._id}_${Date.now()}`}
+    title={marker.type === 'ramp' ? 'Rampa' : 'Piso'}
+    description={marker.address}
   >
-    <Callout tooltip>
-      <View style={styles.callout}>
-        <Text style={styles.calloutText}>{marker.formatted_address}</Text>
-      </View>
-    </Callout>
+    <FastImage source={marker.type === 'ramp' ? rampMarker : tatileMarker} style={styles.image} />
   </Marker>
 );
 
 CustomMarker.propTypes = {
-  marker: PropTypes.any.isRequired,
+  marker: PropTypes.objectOf.isRequired,
 };
 
 export default CustomMarker;

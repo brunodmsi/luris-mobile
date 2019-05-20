@@ -1,23 +1,19 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-undef */
 /* eslint-disable no-useless-return */
 import React, { Component } from 'react';
-import {
-  View, AsyncStorage, TouchableOpacity, Text, StatusBar,
-} from 'react-native';
+import { AsyncStorage, Animated, StatusBar } from 'react-native';
 
 import DropdownAlert from 'react-native-dropdownalert';
 import MapView from 'react-native-maps';
-import { Icon } from 'react-native-elements';
 
 import Header from '~/components/Header';
 import AddMarkerModal from '~/components/AddMarkerModal';
 import FilterModal from '~/components/FilterModal';
+import FadingButton from '~/components/FadingButton';
 
 import CustomMarker from '~/components/CustomMarker';
-
-import styles from './styles';
-import { colors } from '~/styles';
 
 import api from '~/services/api';
 
@@ -36,9 +32,12 @@ export default class Map extends Component {
     addMarkerModal: false,
     typeSelected: '',
     filterModal: false,
+    fadeAnim: new Animated.Value(0),
   };
 
   async componentDidMount() {
+    const { fadeAnim } = this.state;
+
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
         const region = {
@@ -51,13 +50,18 @@ export default class Map extends Component {
         this.setState({ region, isRegionSet: true });
       },
       error => alert(JSON.stringify(error)),
-      // {
-      //   enableHighAccuracy: true,
-      //   timeout: 20000,
-      //   maximumAge: 0,
-      //   samples: 1,
-      // },
+      {
+        // enableHighAccuracy: true,
+        // timeout: 2000,
+        // maximumAge: 0,
+        // samples: 1,
+      },
     );
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 200,
+    }).start();
 
     const { token } = JSON.parse(await AsyncStorage.getItem('@Luris:user'));
 
@@ -169,10 +173,11 @@ export default class Map extends Component {
       renderAddBtn,
       addMarkerModal,
       filterModal,
+      fadeAnim,
     } = this.state;
 
     return (
-      <View style={{ flex: 1 }}>
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
         <StatusBar hidden />
         <Header title="LURIS" handleFilterModal={this._handleFilterModal} />
         <MapView
@@ -188,20 +193,11 @@ export default class Map extends Component {
         >
           {isMarkersLoaded && markers.map(marker => this.renderMarker(marker))}
         </MapView>
-        {/* <TouchableOpacity style={styles.addBtn} onPress={this._addMarkerModal}> */}
-        {/* <Icon name="add-location" size={64} color={colors.primary} solid /> */}
+
         {renderAddBtn ? (
-          <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={this._addMarkerModal}>
-              <Icon name="add-location" size={35} reverse color={colors.secondary} />
-            </TouchableOpacity>
-          </View>
+          <FadingButton addMarkerModal={this._addMarkerModal} icon="add-location" />
         ) : (
-          <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={this._addMarkerModal}>
-              <Icon name="cancel" size={35} reverse color={colors.secondary} />
-            </TouchableOpacity>
-          </View>
+          <FadingButton addMarkerModal={this._addMarkerModal} icon="cancel" />
         )}
 
         {addMarkerModal ? (
@@ -220,7 +216,7 @@ export default class Map extends Component {
           />
         ) : null}
         <DropdownAlert ref={ref => (this.dropdown = ref)} />
-      </View>
+      </Animated.View>
     );
   }
 }

@@ -44,7 +44,7 @@ export default class AddMarkerModal extends Component {
         >
           <View style={styles.button}>
             <Image source={markerRamp} style={styles.image} />
-            <Text style={styles.text}>RAMPA</Text>            
+            <Text style={styles.text}>RAMPA</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -54,7 +54,7 @@ export default class AddMarkerModal extends Component {
         >
           <View style={styles.button}>
             <Image source={markerTatile} style={styles.image} />
-            <Text style={styles.text}>PISO</Text>            
+            <Text style={styles.text}>PISO</Text>
           </View>
         </TouchableOpacity>
       </Modal>
