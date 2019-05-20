@@ -10,6 +10,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  logo: {
+    flex: 1,
+    width: metrics.screenWidth * 0.7,
+    height: 90,
+    resizeMode: 'contain',
+  },
+
   title: {
     textAlign: 'center',
     color: colors.white,

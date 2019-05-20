@@ -9,6 +9,7 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
 
 import api from '~/services/api';
@@ -19,7 +20,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Fumi } from 'react-native-textinput-effects';
 
-import logo from '~/images/LURIS.png';
+import logo from '~/images/LURISFULL.png';
 
 import styles from './styles';
 import { colors } from '~/styles';
@@ -36,10 +37,27 @@ export default class SignIn extends Component {
     password: '',
     name: '',
     loading: false,
+    fadeAnim: new Animated.Value(0),
   };
+
+  componentDidMount() {
+    const { fadeAnim } = this.state;
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+    }).start();
+  }
 
   goToSignIn = () => {
     const { navigation } = this.props;
+    const { fadeAnim } = this.state;
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 100,
+    }).start();
+
     navigation.navigate('SignIn');
   };
 
@@ -74,14 +92,14 @@ export default class SignIn extends Component {
   };
 
   render() {
-    const { loading } = this.state;
+    const { loading, fadeAnim } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           <StatusBar hidden />
 
-          <Image source={logo} />
+          <Image source={logo} style={styles.logo} />
           <Text style={styles.text}>Cadastre-se agora!</Text>
           <Text style={styles.text}>Nos informe seu</Text>
           <Text style={styles.text}>nome, e-mail e senha.</Text>
@@ -140,7 +158,7 @@ export default class SignIn extends Component {
           </View>
           <KeyboardSpacer />
           <DropdownAlert ref={ref => (this.dropdown = ref)} />
-        </View>
+        </Animated.View>
       </TouchableWithoutFeedback>
     );
   }
